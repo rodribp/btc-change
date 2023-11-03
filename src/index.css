@@ -11,3 +11,17 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.error-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f0f0; /* Choose a background color of your preference */
+}
+
+.error-message {
+  font-size: 1.5em;
+  text-align: center;
+  color: #333; /* Choose a text color of your preference */
+}
