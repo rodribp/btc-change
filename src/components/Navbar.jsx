@@ -1,11 +1,24 @@
 import { Container, Navbar, Nav } from 'react-bootstrap';
 import logo from '../assets/img/logo-simple.png'
 import { useState } from 'react';
-import { AiOutlineLogin, AiOutlineUserAdd } from 'react-icons/ai';
+import { AiOutlineLogin, AiOutlineUserAdd, AiOutlineLogout } from 'react-icons/ai';
+import { getData, isLoggedIn, logOut } from '../helpers/credentials';
 
 const NavbarSample = () => {
-    const [isLogged, setIsLogged] = useState(false);
-    const [elements, setElements] = useState(
+    const isLogged = isLoggedIn();
+
+    const handleLogout = () => {
+        logOut();
+        window.location.href = '/';
+    }
+
+    var elements  = isLogged ? (
+        <Navbar.Collapse className="justify-content-end">
+                <Nav>
+                    <Nav.Link onClick={handleLogout}>logout <AiOutlineLogout /></Nav.Link>
+                </Nav>
+        </Navbar.Collapse>
+    ) : (
         <Navbar.Collapse className="justify-content-end">
                 <Nav>
                     {window.location.pathname == '/signup' ? <Nav.Link href='/'>login <AiOutlineLogin /></Nav.Link> : <Nav.Link href='/signup'>signup <AiOutlineUserAdd /></Nav.Link>}
@@ -13,9 +26,6 @@ const NavbarSample = () => {
         </Navbar.Collapse>
     )
 
-    if (isLogged) {
-
-    }
 
     return (
         <Navbar className="bg-body-tertiary" bg='dark' data-bs-theme="dark">

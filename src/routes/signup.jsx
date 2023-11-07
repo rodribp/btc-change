@@ -1,7 +1,7 @@
 import {Row, Col, Container, Form, Button, Alert, Spinner } from 'react-bootstrap';
 import NavbarSample from '../components/Navbar'; 
 import { useState } from 'react';
-import createNewUser from '../api/lnbits';
+import { createNewUser } from '../api/lnbits';
 import { checkUniqueUser, insertSanity, userSchema } from '../api/db';
 import { isStrong } from '../helpers/security';
 
@@ -88,6 +88,13 @@ const Signup = () => {
         setAlert(<Alert key='success' variant='success'>
             Store registered successfully!
         </Alert>)
+
+        setFormData({
+            user: '',
+            name: '',
+            password1: '',
+            password2: ''
+           });
     }
 
 
@@ -96,7 +103,7 @@ const Signup = () => {
             <Container >
             <br />
                     <div className="text-center">
-                        <h2>Register my store</h2>
+                        <h2>Register my store!</h2>
                     </div>
                     <br />
                     <Row className="justify-content-md-center">

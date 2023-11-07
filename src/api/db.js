@@ -1,5 +1,5 @@
 import { createClient } from "@sanity/client";
-import { hashPassword } from "../helpers/security";
+import { hashPassword, verifyPassword } from "../helpers/security";
 const PROJECT_ID = 'oob058kw';
 const KEY = 'skDEcDYSJo1PM0ee3JYwPBwNuxHz0JWftgjjOuXnWVIiXaTF4xWdr4qda5wigtrlZNecUdwJbam7D5ZxpiAVzjsxlEbHM8kOfE6u45ETiUiSlvbKsCFGuS0inntGbmXs4NqZWBKSD6D22vzEi79j2P3DHd4eMZ4EsMG5t8ARqlJL41OMPvL0';
 const DATASET = 'production';
@@ -47,6 +47,24 @@ const checkUniqueUser = async (user) => {
     }
 }
 
+const verifyCredentials = async(user, password) => {
+    try {
+        const query = `*[_type == 'stores' && user == $user ] { _id, user, password, invoice_key, wallet_id, admin_key, user_id }`;
+        const response = await client.fetch(query, { user });
+
+        if (!response) {
+            return;
+        }
+
+        const isPassword = await verifyPassword(password, response[0].password);
+
+        return isPassword ? response[0] : false;
+    } catch (error) {
+        console.error("Error fetching credentials", error.message);
+    }
+}
+
 export {    userSchema,
             insertSanity,
-            checkUniqueUser }
+            checkUniqueUser,
+            verifyCredentials }

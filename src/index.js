@@ -6,7 +6,8 @@ import ErrorPage from './error-page.jsx';
 import App from './routes/App.jsx';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Signup from './routes/signup.jsx';
-
+import { isLoggedIn } from './helpers/credentials.js';
+import Dashboard from './routes/dashboard.jsx';
 
 const noLoggedRoutes = [{
   path: "/",
@@ -18,7 +19,13 @@ const noLoggedRoutes = [{
   element: <Signup />,
 }]
 
-const router = createBrowserRouter(noLoggedRoutes);
+const loggedRoutes = [{
+  path: "/",
+  element: <Dashboard />,
+  errorElement: <ErrorPage />,
+}]
+
+const router = createBrowserRouter(isLoggedIn() ? loggedRoutes : noLoggedRoutes);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

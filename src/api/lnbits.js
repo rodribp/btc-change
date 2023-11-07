@@ -79,6 +79,33 @@ const getLastUsrData = async () => {
     return json;
 }
 
+//function to get data from an specific usr id
+const getDataFromUser = async (user) => {
+    let data = await apiRequestGet(USER_MANAGER_URL, ADMIN_KEY, 'wallets');
+    let json = '';
+
+    for (var i = 0; i < data.length; i++) {
+        if (data[i].user == user) {
+            json = {
+                admin: data[i].admin,
+                adminkey: data[i].adminkey,
+                id: data[i].id,
+                inkey: data[i].inkey,
+                name: data[i].name,
+                user: data[i].user
+            }
+        }
+    }
+
+    return json;
+}
+
+//function to get data from an specific usr id
+const verifyUser = async (user) => {
+    let data = await apiRequestGet(USER_MANAGER_URL, ADMIN_KEY, 'wallets');
+
+    return data;
+}
 
 const createNewUser = async (username, walletname, email, password) => {
     await apiRequestPost(USER_MANAGER_URL, ADMIN_KEY, 'users', createBody(username, walletname, email, password));
@@ -88,4 +115,4 @@ const createNewUser = async (username, walletname, email, password) => {
     return data;
 }
 
-export default createNewUser
+export {createNewUser, verifyUser, getLastUsrData}
