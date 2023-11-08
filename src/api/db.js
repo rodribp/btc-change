@@ -13,7 +13,7 @@ const client = createClient({
     ignoreBrowserTokenWarning: true
 });
 
-const userSchema = async (user, name, password, invoice_key, wallet_id, admin_key, user_id) => {
+const userSchema = async (user, name, password, invoice_key, wallet_id, admin_key, user_id, lnurlp) => {
     let hash = await hashPassword(password);
     return {
         _type: 'stores',
@@ -23,7 +23,24 @@ const userSchema = async (user, name, password, invoice_key, wallet_id, admin_ke
         invoice_key: invoice_key,
         wallet_id: wallet_id,
         admin_key: admin_key,
-        user_id: user_id
+        user_id: user_id,
+        lnurlp: lnurlp
+    }
+}
+
+const changeSchema = (id_lnurl, link_lnurl, date, amount_sats, amount_usd, store) => {
+    return {
+        _type: 'changes',
+        id_lnurl: id_lnurl,
+        link_lnurl: link_lnurl,
+        date: date,
+        amount_sats: amount_sats,
+        amount_usd: amount_usd,
+        status: true,
+        store: {
+            _type: 'reference',
+            _ref: store
+        }
     }
 }
 
@@ -49,7 +66,7 @@ const checkUniqueUser = async (user) => {
 
 const verifyCredentials = async(user, password) => {
     try {
-        const query = `*[_type == 'stores' && user == $user ] { _id, user, password, invoice_key, wallet_id, admin_key, user_id }`;
+        const query = `*[_type == 'stores' && user == $user ] { _id, user, password, invoice_key, wallet_id, admin_key, user_id, lnurlp }`;
         const response = await client.fetch(query, { user });
 
         if (!response) {
@@ -64,7 +81,40 @@ const verifyCredentials = async(user, password) => {
     }
 }
 
+const getVoucherByUid = async (uid) => {
+    try {
+        const query = `*[_type == 'changes' && id_lnurl == $uid] {_id, link_lnurl, date, amount_sats, amount_usd, status}`;
+        const response = await client.fetch(query, { uid });
+
+        if (!response) {
+            return;
+        }
+
+        return response;
+    } catch (error) {
+        console.error("Error fetching Voucher", error.message);
+    }
+}
+
+const getAllVouchersByStore = async (id) => {
+    try {
+        const query = `*[_type == 'changes' && store._ref == $id] | order(status desc) {id_lnurl, amount_usd, date, status}`;
+        const response = await client.fetch(query, { id });
+
+        if (!response) {
+            return;
+        }
+
+        return response;
+    } catch (error) {
+        console.error("Error fetching vouchers", error.message);
+    }
+}
+
 export {    userSchema,
             insertSanity,
             checkUniqueUser,
-            verifyCredentials }
+            verifyCredentials,
+            changeSchema,
+            getVoucherByUid,
+            getAllVouchersByStore }

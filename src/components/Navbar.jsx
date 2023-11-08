@@ -1,7 +1,7 @@
 import { Container, Navbar, Nav } from 'react-bootstrap';
 import logo from '../assets/img/logo-simple.png'
 import { useState } from 'react';
-import { AiOutlineLogin, AiOutlineUserAdd, AiOutlineLogout } from 'react-icons/ai';
+import { AiOutlineLogin, AiOutlineUserAdd, AiOutlineLogout, AiFillBook, AiOutlineSend } from 'react-icons/ai';
 import { getData, isLoggedIn, logOut } from '../helpers/credentials';
 
 const NavbarSample = () => {
@@ -14,6 +14,12 @@ const NavbarSample = () => {
 
     var elements  = isLogged ? (
         <Navbar.Collapse className="justify-content-end">
+                <Nav>
+                    <Nav.Link href='/fundwallet'>Fund wallet <AiOutlineSend /></Nav.Link>
+                </Nav>
+                <Nav>
+                    <Nav.Link href='/changes'>Changes <AiFillBook /></Nav.Link>
+                </Nav>
                 <Nav>
                     <Nav.Link onClick={handleLogout}>logout <AiOutlineLogout /></Nav.Link>
                 </Nav>

@@ -67,7 +67,7 @@ const Signup = () => {
 
         //signs up
         let response = await createNewUser(formData.user, formData.name);
-        let user = await userSchema(formData.user, formData.name, formData.password1, response.inkey, response.id, response.adminkey, response.user);
+        let user = await userSchema(formData.user, formData.name, formData.password1, response.inkey, response.id, response.adminkey, response.user, response.lnurlp);
         let db_response = await insertSanity(user);
 
         if (!response) {
@@ -112,19 +112,19 @@ const Signup = () => {
                             <Form onSubmit={handleSubmit}>
                                 <Form.Group controlId="formUser" className="mb-3">
                                     <Form.Label>User</Form.Label>
-                                    <Form.Control onChange={handleChangeForm} name="user" type="text" placeholder="Satoshi Nakamoto" />
+                                    <Form.Control value={formData.user} onChange={handleChangeForm} name="user" type="text" placeholder="Satoshi Nakamoto" />
                                 </Form.Group>
                                 <Form.Group controlId="formName" className="mb-3">
                                     <Form.Label>Store name</Form.Label>
-                                    <Form.Control onChange={handleChangeForm} name="name" type="text" placeholder="Satoshi Nakamoto" />
+                                    <Form.Control value={formData.name} onChange={handleChangeForm} name="name" type="text" placeholder="Satoshi Nakamoto" />
                                 </Form.Group>
                                 <Form.Group controlId="formPassword1" className="mb-3">
                                     <Form.Label>Password</Form.Label>
-                                    <Form.Control onChange={handleChangeForm} name="password1" type="password" placeholder="Some password" />
+                                    <Form.Control value={formData.password1} onChange={handleChangeForm} name="password1" type="password" placeholder="Some password" />
                                 </Form.Group>
                                 <Form.Group controlId="formPassword2" className="mb-3">
                                     <Form.Label>Confirmation</Form.Label>
-                                    <Form.Control onChange={handleChangeForm} name="password2" type="password" placeholder="Confirm password" />
+                                    <Form.Control value={formData.password2} onChange={handleChangeForm} name="password2" type="password" placeholder="Confirm password" />
                                 </Form.Group>
                                 <br />
                                 <Col className="d-grid gap-2">

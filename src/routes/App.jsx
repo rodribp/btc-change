@@ -11,6 +11,7 @@ function App() {
         password: ''
     });
     const [alert, setAlert] = useState(<></>);
+    
 
     const handleChangeForm = (e) => {
         const { name, value } = e.target;
@@ -45,9 +46,10 @@ function App() {
             return;
         }
 
-        login(dbCheck._id, dbCheck.user_id, dbCheck.user, dbCheck.invoice_key, dbCheck.wallet_id, dbCheck.admin_key);
-        window.location.href = '/';
+        login(dbCheck._id, dbCheck.user_id, dbCheck.user, dbCheck.invoice_key, dbCheck.wallet_id, dbCheck.admin_key, dbCheck.lnurlp);
+        window.location.href = '/'; 
     }
+
 
     return (
         <>
@@ -66,11 +68,11 @@ function App() {
                         <Form onSubmit={handleSubmit}>  
                             <Form.Group className="mb-3">
                                 <Form.Label>Enter your username</Form.Label>
-                                <Form.Control onChange={handleChangeForm} name="user" type="text" placeholder="Username" />
+                                <Form.Control value={formData.user} onChange={handleChangeForm} name="user" type="text" placeholder="Username" />
                             </Form.Group>
                             <Form.Group className="mb-3">
                                 <Form.Label>Enter your password</Form.Label>
-                                <Form.Control onChange={handleChangeForm} name="password" type="password" placeholder="your password account" />
+                                <Form.Control value={formData.password} onChange={handleChangeForm} name="password" type="password" placeholder="your password account" />
                             </Form.Group>
                             <br />
                             <Col className="d-grid gap-2">

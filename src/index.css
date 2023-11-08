@@ -25,3 +25,9 @@ code {
   text-align: center;
   color: #333; /* Choose a text color of your preference */
 }
+
+.custom-form {
+  width: 60%; /* Adjust the width as needed */
+  margin: 0 auto; /* Center the form horizontally */
+  padding: 20px; /* Add some padding to the form */
+}

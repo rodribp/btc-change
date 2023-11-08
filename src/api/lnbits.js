@@ -8,6 +8,8 @@ const WALLET_ID = 'e3bf70b0743a4adab9fa8045bddfa421';
 const USER_ID = '827252d16a7d405e8e8b98d064c4df78';
 
 const USER_MANAGER_URL = DOMAIN + 'usermanager/api/v1/'
+const LNURLP_URL = DOMAIN + 'lnurlp/api/v1/links';
+const LNURLW_URL = DOMAIN + 'withdraw/api/v1/';
 
 const apiRequestGet = async (url, key, action) => {
     let options = {
@@ -60,6 +62,7 @@ const createBody = (username, walletname, email, password) => {
     return body;
 }
 
+
 const getLastUsrData = async () => {
     let data = await apiRequestGet(USER_MANAGER_URL, ADMIN_KEY, 'wallets');
     let json = '';
@@ -111,8 +114,27 @@ const createNewUser = async (username, walletname, email, password) => {
     await apiRequestPost(USER_MANAGER_URL, ADMIN_KEY, 'users', createBody(username, walletname, email, password));
     let data = await getLastUsrData();
     await apiRequestPost(USER_MANAGER_URL, ADMIN_KEY, 'extensions?extension=withdraw&userid=' + data.user + '&active=true');
+    await apiRequestPost(USER_MANAGER_URL, ADMIN_KEY, 'extensions?extension=lnurlp&userid=' + data.user + '&active=true');
+    let lnurlp = await apiRequestPost(LNURLP_URL, data.adminkey, '', {'description': '', 'max': 1000000, 'min': 1, 'zaps': 'false', 'comment_chars': 0});
+
+    data = {
+        ...data,
+        lnurlp: lnurlp.lnurl
+    }
 
     return data;
 }
 
-export {createNewUser, verifyUser, getLastUsrData}
+const createWithdraw = async (key, title, amount) => {
+    const response = await apiRequestPost(LNURLW_URL, key, 'links', {title: title, min_withdrawable: amount, max_withdrawable: amount, uses: 1, wait_time: 1, is_unique: true});
+
+    return response;
+}
+
+const getBalance = async (key) => {
+    const response = await apiRequestGet(API_URL, key, 'wallet');
+
+    return response.balance;
+}
+
+export {createNewUser, verifyUser, getLastUsrData, getBalance, createWithdraw }

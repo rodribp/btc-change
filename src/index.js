@@ -8,6 +8,9 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Signup from './routes/signup.jsx';
 import { isLoggedIn } from './helpers/credentials.js';
 import Dashboard from './routes/dashboard.jsx';
+import FundWallet from './routes/fund.jsx';
+import Changes from './routes/changes.jsx';
+import Voucher from './routes/voucher.jsx';
 
 const noLoggedRoutes = [{
   path: "/",
@@ -23,6 +26,18 @@ const loggedRoutes = [{
   path: "/",
   element: <Dashboard />,
   errorElement: <ErrorPage />,
+},
+{
+  path: "/fundwallet",
+  element: <FundWallet />
+},
+{
+  path: "/changes",
+  element: <Changes />
+},
+{
+  path: "/voucher",
+  element: <Voucher />
 }]
 
 const router = createBrowserRouter(isLoggedIn() ? loggedRoutes : noLoggedRoutes);
