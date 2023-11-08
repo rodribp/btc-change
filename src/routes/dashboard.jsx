@@ -47,6 +47,13 @@ const Dashboard = () => {
 
         const uid = generateGuid();
 
+        if (satsAmount > balance) {
+            setAlert(<Alert key='danger' variant='danger'>
+                    You don't have enough funds
+                </Alert>)
+            return;
+        }
+
         const response = await createWithdraw(credentials.adminKey, uid, satsAmount);
 
         if (!response) {

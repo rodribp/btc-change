@@ -22,6 +22,7 @@ const Voucher = () => {
         
         const response = await getVoucherByUid(uid);
         
+
         if (!response[0]) {
             return;
         }
@@ -46,7 +47,8 @@ const Voucher = () => {
                     <Col sm={12} md={8}>
                         <br />
                         {
-                            !infoVoucher._id ? (<h4>Not found</h4>) : (<><h4>Voucher id: {uid}</h4>{infoVoucher.status ? (<Badge bg="success">Available</Badge>) : (<Badge bg="danger">Taken</Badge>)}
+                            !infoVoucher._id ? (<h4>Not found</h4>) : 
+                            (<><h4>Voucher id: {uid}</h4>
                             <h4>Amount in USD: ${infoVoucher.amount_usd}</h4>
                             <h4>Amount in SATS: {infoVoucher.amount_sats}</h4>
                             <h4>Date: {timeConverter(infoVoucher.date)}</h4>

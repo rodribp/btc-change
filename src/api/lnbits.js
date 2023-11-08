@@ -144,4 +144,10 @@ const getBalance = async (key) => {
     return response.balance;
 }
 
-export {createNewUser, verifyUser, getLastUsrData, getBalance, createWithdraw, getTransactions }
+const getVouchers = async (invoiceKey) => {
+    const response = await apiRequestGet(LNURLW_URL, invoiceKey, 'links');
+
+    return response;
+}
+
+export {createNewUser, verifyUser, getLastUsrData, getBalance, createWithdraw, getTransactions, getVouchers }
