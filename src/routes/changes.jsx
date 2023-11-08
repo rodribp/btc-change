@@ -4,17 +4,29 @@ import NavbarSample from '../components/Navbar';
 import { useEffect, useState } from 'react';
 import { getData } from '../helpers/credentials';
 import timeConverter from '../helpers/unix';
-import { getAllVouchersByStore } from '../api/db';
+import { getAllVouchersByStore, updateStatusVoucher } from '../api/db';
+import { getTransactions } from '../api/lnbits';
 
 const Changes = () => {
     const credentials = getData();
     const [changes, setChanges] = useState([]);
+    const [transactions, setTransactions] = useState([]);
 
     const fetchChanges = async () => {
-        const response = await getAllVouchersByStore(credentials.sanityId);
+        const responseLnbits = await getTransactions(credentials.invoiceKey);
+        var response = await getAllVouchersByStore(credentials.sanityId);
+        responseLnbits.map(async (res1) => {
+            response.map(async (res2) => {
+                if (res1.memo == res2.id_lnurl && res2.status) {
+                    const res = await updateStatusVoucher(res2._id);
+
+                }
+            })
+        })
 
         setChanges(response);
     }
+
 
     useEffect(() => {
         fetchChanges();

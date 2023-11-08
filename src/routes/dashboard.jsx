@@ -42,6 +42,7 @@ const Dashboard = () => {
             setAlert(<Alert key='danger' variant='danger'>
                     sats amount must be 10 or more
                 </Alert>)
+                return;
         }
 
         const uid = generateGuid();

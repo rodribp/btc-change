@@ -103,6 +103,13 @@ const getDataFromUser = async (user) => {
     return json;
 }
 
+const getTransactions = async (key) => {
+    const response = await apiRequestGet(API_URL, key, 'payments');
+
+    return response;
+}
+
+
 //function to get data from an specific usr id
 const verifyUser = async (user) => {
     let data = await apiRequestGet(USER_MANAGER_URL, ADMIN_KEY, 'wallets');
@@ -137,4 +144,4 @@ const getBalance = async (key) => {
     return response.balance;
 }
 
-export {createNewUser, verifyUser, getLastUsrData, getBalance, createWithdraw }
+export {createNewUser, verifyUser, getLastUsrData, getBalance, createWithdraw, getTransactions }

@@ -98,7 +98,7 @@ const getVoucherByUid = async (uid) => {
 
 const getAllVouchersByStore = async (id) => {
     try {
-        const query = `*[_type == 'changes' && store._ref == $id] | order(status desc) {id_lnurl, amount_usd, date, status}`;
+        const query = `*[_type == 'changes' && store._ref == $id] | order(status desc) {_id, id_lnurl, amount_usd, date, status}`;
         const response = await client.fetch(query, { id });
 
         if (!response) {
@@ -111,10 +111,20 @@ const getAllVouchersByStore = async (id) => {
     }
 }
 
+const updateStatusVoucher = async (id) => {
+    try {
+        const result = client.patch(id).set({status: false}).commit();
+        return result;
+    } catch (error) {
+        console.error("error patching", error.message);
+    }
+}
+
 export {    userSchema,
             insertSanity,
             checkUniqueUser,
             verifyCredentials,
             changeSchema,
             getVoucherByUid,
-            getAllVouchersByStore }
+            getAllVouchersByStore,
+            updateStatusVoucher }
