@@ -5,6 +5,7 @@ import { getVoucherByUid } from "../api/db";
 import { QRCodeSVG } from "qrcode.react";
 import timeConverter from "../helpers/unix";
 import { AiFillPrinter } from 'react-icons/ai';
+import {PrintTicket, SendTicket} from "../tickets/print";
 
 const Voucher = () => {
     const params = new URLSearchParams(window.location.search);
@@ -53,9 +54,8 @@ const Voucher = () => {
                             <h4>Amount in SATS: {infoVoucher.amount_sats}</h4>
                             <h4>Date: {timeConverter(infoVoucher.date)}</h4>
                             <br />
-                            <Button><AiFillPrinter size={25} /> Print voucher</Button></>)
+                            <Button onClick={() => PrintTicket(timeConverter(infoVoucher.date), timeConverter(infoVoucher.date), 0, infoVoucher.amount_usd, infoVoucher.amount_sats, infoVoucher.link_lnurl)}><AiFillPrinter size={25} /> Print voucher</Button></>)
                         }
-                        
                     </Col>
                 </Row>
             </Container>
