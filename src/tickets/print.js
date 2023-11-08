@@ -8,10 +8,10 @@ function viewResult(result) {
 
 function SendTicket(){
     let date = new Date;
-    PrintTicket(date,date,30500,2.5,300,"code url 0123181385418");
+    PrintTicket(date,30500,2.5,300,"code url 0123181385418","Company");
 }
 
-function PrintTicket(fec1,fec2,BTC,USD,SAT,QRurl) {
+function PrintTicket(fec,fec2,BTC,USD,SAT,QRurl, user) {
 
     //Datos
     
@@ -24,7 +24,7 @@ function PrintTicket(fec1,fec2,BTC,USD,SAT,QRurl) {
     let nf = new Intl.NumberFormat('en-US');
     BTC = nf.format(BTC);
 
-    printText("\n\nBitChange\nEl Salvador Cubo+\nName Company\n\n", 0, 0, true, false, false, 0, 1);
+    printText("\n\nBitChange\nEl Salvador Cubo+\n"+user+"\n\n", 0, 0, true, false, false, 0, 1);
     
     printQRCode("www.bitchange.site",0,1,7,0);
     printText("\nwww.bitchange.site", 0, 0, true, false, false, 0, 1);
@@ -33,11 +33,8 @@ function PrintTicket(fec1,fec2,BTC,USD,SAT,QRurl) {
     printText("------------------------------------------\n", 0, 0, false, false, false, 0, 0);
     printText("Datos de Conversion - Data Convertion\n"     , 0, 0, true , false, false, 0, 1);
     printText("                                          \n", 0, 0, false, false, false, 0, 0);
-    printText("BTC to USD:                "+BTC+"        \n", 0, 0, false, false, false, 0, 0);
-    printText("UTC Date:                                \n", 0, 0, true , false, false, 0, 0);
-    printText(fec2+       "\n", 0, 0, false, false, false, 0, 0);		
-    printText("Local Date:                              \n", 0, 0, true , false, false, 0, 0);
-    printText(fec1+          "\n", 0, 0, false, false, false, 0, 0);		
+    printText("Date:                                     \n", 0, 0, true , false, false, 0, 0);
+    printText(fec+       "\n", 0, 0, false, false, false, 0, 0);				
     printText("------------------------------------------\n", 0, 0, false, false, false, 0, 0);
     printText("Monto Vuelto - Change Amount\n"                              , 0, 0, true , false, false, 0, 1);
     printText("                                          \n", 0, 0, false, false, false, 0, 0);
@@ -52,7 +49,7 @@ function PrintTicket(fec1,fec2,BTC,USD,SAT,QRurl) {
     cutPaper(1);
 
     var strSubmit = getPosData();
-
+    
     requestPrint(printName, strSubmit, viewResult);
 
     return true;

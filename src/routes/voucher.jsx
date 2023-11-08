@@ -6,6 +6,7 @@ import { QRCodeSVG } from "qrcode.react";
 import timeConverter from "../helpers/unix";
 import { AiFillPrinter } from 'react-icons/ai';
 import {PrintTicket, SendTicket} from "../tickets/print";
+import { getData } from "../helpers/credentials";
 
 const Voucher = () => {
     const params = new URLSearchParams(window.location.search);
@@ -18,6 +19,7 @@ const Voucher = () => {
         date: '0',
         _id: ''
     });
+    const { user } = getData();
 
     const getVoucher = async () => {
         
@@ -54,7 +56,7 @@ const Voucher = () => {
                             <h4>Amount in SATS: {infoVoucher.amount_sats}</h4>
                             <h4>Date: {timeConverter(infoVoucher.date)}</h4>
                             <br />
-                            <Button onClick={() => PrintTicket(timeConverter(infoVoucher.date), timeConverter(infoVoucher.date), 0, infoVoucher.amount_usd, infoVoucher.amount_sats, infoVoucher.link_lnurl)}><AiFillPrinter size={25} /> Print voucher</Button></>)
+                            <Button onClick={() => PrintTicket(timeConverter(infoVoucher.date), timeConverter(infoVoucher.date), 0, infoVoucher.amount_usd, infoVoucher.amount_sats, infoVoucher.link_lnurl, user)}><AiFillPrinter size={25} /> Print voucher</Button></>)
                         }
                     </Col>
                 </Row>
