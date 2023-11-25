@@ -35,7 +35,7 @@ const Dashboard = () => {
 
         const fetchData = async () => {
             const balance = await getBalance(credentials.invoiceKey);
-            setBalance(balance / 1000);
+            setBalance(((balance / 1000) - debt) - 25);
         }
 
         const unsubscribe = subscribeToWebSocket((price) => {
@@ -71,23 +71,14 @@ const Dashboard = () => {
 
         const uid = generateGuid();
 
-        if (satsAmount > balance - 25) {
+        if (satsAmount > balance) {
             setAlert(<Alert key='danger' variant='danger'>
                     You don't have enough funds
                 </Alert>)
             setPreview(<></>);
             
             return;
-        }
-
-        if ( satsAmount > balance - 25 - debt) {
-            setAlert(<Alert key='danger' variant='danger'>
-                    You have more sats in debt than in balance
-                </Alert>)
-            setPreview(<></>);
-            
-            return;
-        }
+        }   
 
         const response = await createWithdraw(credentials.adminKey, uid, satsAmount);
 

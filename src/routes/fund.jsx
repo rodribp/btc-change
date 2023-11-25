@@ -17,10 +17,12 @@ const FundWallet = () => {
         <NavbarSample />
         <Container>
             <br />
-            <Row>
+            <Row className='text-center'>
                 <Col className='text-center'>
                     <h4>To send funds to the wallet, scan the following qrcode in your wallet!</h4>
                 </Col>
+                <h6 style={{color: 'red',
+                            font: 'small-caption'}}>We are charging you 25 sats in the first transaction to ensure you'll have enough liqudity for the changes</h6>
             </Row>
             <br />
             <Row>
