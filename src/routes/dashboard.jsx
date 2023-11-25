@@ -3,20 +3,36 @@ import NavbarSample from "../components/Navbar";
 import { useState, useEffect } from "react";
 import { getData } from "../helpers/credentials";
 import { subscribeToWebSocket } from "../api/btcprice";
-import { getBalance, createWithdraw } from '../api/lnbits';
+import { getBalance, createWithdraw, getVouchers } from '../api/lnbits';
 import { changeSchema, insertSanity } from "../api/db";
 import generateGuid from "../helpers/guid";
+import VoucherRapid from "./voucher";
 
 const Dashboard = () => {
     const credentials = getData();
     const [btcPrice, setBtcPrice] = useState(0);
     const [balance, setBalance] = useState(0);
-    const [show, setShow] = useState(false);
     const [satsAmount, setSatsAmount] = useState(0);
     const [usdAmount, setUsdAmount] = useState(0);
     const [alert, setAlert] = useState(<></>);
+    const [preview, setPreview] = useState(<></>);
+    const [debt, setDebt] = useState(0);
+
+    const listVouchers = async () => {
+        const vouchersList = await getVouchers(credentials.invoiceKey);
+
+        let debt = 0;
+        vouchersList.map((voucher) => {
+            if (!voucher.used) {
+                debt += voucher.max_withdrawable
+            }
+        });
+
+        setDebt(debt);
+    }
 
     useEffect(() => {
+
         const fetchData = async () => {
             const balance = await getBalance(credentials.invoiceKey);
             setBalance(balance / 1000);
@@ -27,30 +43,49 @@ const Dashboard = () => {
         });
 
         fetchData();
+        
+        listVouchers();
         return () => {
             unsubscribe();
         }
-    }, [])
+
+
+    }, []);
 
 
     const handleCreateVoucher = async (e) => {
-        setAlert(<Spinner animation="border" role="status">
-                <span className="visually-hidden">Loading...</span>
-            </Spinner>)
+
+        if (!btcPrice) {
+            return;
+        }
         
+        setPreview(<VoucherRapid uid="spinner"></VoucherRapid>);
+
         if (satsAmount < 10) {
             setAlert(<Alert key='danger' variant='danger'>
                     sats amount must be 10 or more
                 </Alert>)
+            setPreview(<></>);
                 return;
         }
 
         const uid = generateGuid();
 
-        if (satsAmount > balance) {
+        if (satsAmount > balance - 25) {
             setAlert(<Alert key='danger' variant='danger'>
                     You don't have enough funds
                 </Alert>)
+            setPreview(<></>);
+            
+            return;
+        }
+
+        if ( satsAmount > balance - 25 - debt) {
+            setAlert(<Alert key='danger' variant='danger'>
+                    You have more sats in debt than in balance
+                </Alert>)
+            setPreview(<></>);
+            
             return;
         }
 
@@ -61,7 +96,6 @@ const Dashboard = () => {
             return;
         }
         
-        console.log(credentials);
         const responseSanity = await insertSanity(changeSchema(uid, response.lnurl, response.open_time, satsAmount, usdAmount, credentials.sanityId));
 
         if (!responseSanity) {
@@ -69,7 +103,10 @@ const Dashboard = () => {
             return;
         }
 
-        window.location.href = '/voucher?uid=' + uid;
+        setAlert(<></>);
+
+        listVouchers();
+        setPreview(<VoucherRapid uid={uid}></VoucherRapid>);
     }
 
     const handleSatsChange = (e) => {
@@ -86,14 +123,39 @@ const Dashboard = () => {
 
     return (<>
         <NavbarSample />
+        
         <Container>
             <br />
             <Row>
-                <Col>
+                <Col lg={3}>
                     <Card>
                         <Card.Header><h5>Balance</h5>  <span>Current bitcoin price: ${btcPrice}</span></Card.Header>
                         <Card.Body>
                             <Card.Title>{balance != 0 ?  balance.toFixed(0) + ' SATS = $' + (balance * btcPrice / 100000000).toFixed(2) : 0} </Card.Title>
+                        </Card.Body>
+                    </Card>
+                    
+                <br />
+                </Col>
+                <Col lg={9}>
+                    <Card>
+                        <Card.Header className="flex">
+                            <h5>New voucher</h5>
+                        </Card.Header>
+                        <Card.Body>
+                            <Form as={Row}>
+                                {alert}
+                                <Form.Group as={Col} sm={12} md={5}>
+                                    <Form.Label>Amount of SATS</Form.Label>
+                                    <Form.Control type="number" value={satsAmount} onChange={handleSatsChange}></Form.Control>
+                                </Form.Group>
+                                <Form.Group as={Col} sm={12} md={5}>
+                                    <Form.Label>Amount of USD</Form.Label>
+                                    <Form.Control type="number" value={usdAmount} onChange={handleUsdChange}></Form.Control>
+                                </Form.Group>
+                            </Form>
+                            <br />
+                            <Button variant="primary" onClick={handleCreateVoucher}>Create voucher</Button>
                         </Card.Body>
                     </Card>
                 </Col>
@@ -101,39 +163,10 @@ const Dashboard = () => {
             <br />
             <Row>
                 <Col>
-                    <Button onClick={btcPrice ? () => setShow(true) : () => setShow(false)}>Create voucher</Button>
+                    {preview}
                 </Col>
             </Row>
         </Container>
-        <Modal
-                show={show}
-                onHide={() => setShow(false)}
-                backdrop="static"
-                keyboard={false}
-            >
-            <Modal.Header>
-                <Modal.Title>Create a voucher</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                {alert}
-                <Form as={Row}>
-                    <Form.Group as={Col}>
-                        <Form.Label>Amount of SATS</Form.Label>
-                        <Form.Control type="number" value={satsAmount} onChange={handleSatsChange}></Form.Control>
-                    </Form.Group>
-                    <Form.Group as={Col}>
-                        <Form.Label>Amount of USD</Form.Label>
-                        <Form.Control type="number" value={usdAmount} onChange={handleUsdChange}></Form.Control>
-                    </Form.Group>
-                </Form>
-            </Modal.Body>
-            <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShow(false)}>
-                Close
-            </Button>
-            <Button variant="primary" onClick={handleCreateVoucher}>Create voucher</Button>
-            </Modal.Footer>
-        </Modal>
     </>)
 }
 

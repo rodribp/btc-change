@@ -10,7 +10,7 @@ import { isLoggedIn } from './helpers/credentials.js';
 import Dashboard from './routes/dashboard.jsx';
 import FundWallet from './routes/fund.jsx';
 import Changes from './routes/changes.jsx';
-import Voucher from './routes/voucher.jsx';
+import Voucher from './routes/voucherPage.jsx';
 
 const noLoggedRoutes = [{
   path: "/",

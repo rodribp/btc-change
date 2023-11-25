@@ -47,6 +47,7 @@ const changeSchema = (id_lnurl, link_lnurl, date, amount_sats, amount_usd, store
 const insertSanity = async (data) => {
     try {
         const response = await client.create(data);
+        
         return response;
     } catch (error) {
         console.error('error inserting data: ', error.message)
